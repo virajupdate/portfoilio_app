@@ -22,15 +22,46 @@ const Contact = () => {
     setIsLoading(true);
     setCurentanimation('hit');
 
+    
+  const toEmail = 'vrdeshmukh2001@gmail.com';
+  const fromEmail = form.email;
+
+  // Validate email format
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // Check for valid email format
+  if (!isValidEmail(fromEmail)) {
+    showAlert({show:true, text:'Please enter a valid email', type:'danger'})
+    setTimeout(()=>{
+      hideAlert();
+      setCurentanimation('idle');
+      setForm({name:'',email:'',message:''});
+    },3000)
+    return;
+  }
+
+  // Check if sender email is same as receiver email
+  if (fromEmail.trim().toLowerCase() === toEmail.toLowerCase()) {
+    showAlert({show:true, text:'Please enter your email', type:'danger'})
+    setTimeout(()=>{
+      hideAlert();
+      setCurentanimation('idle');
+      setForm({name:'',email:'',message:''});
+    },3000)
+        return;
+  }
+
+
     emailjs.send(
       import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
       import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
       {
         from_name:form.name,
         to_name:"Viraj Deshmukh",
-        from_email:form.email,
-        to_email:'vrdeshmukh2001@gmail.com',
-        message:form.message
+        from_email:fromEmail,
+        to_email:toEmail,
+        message:`Email from: ${form.email}\n\n${form.message}`,
       },
       import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       
